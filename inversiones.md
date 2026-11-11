@@ -15,4 +15,4 @@ Total: ~$2,020.39 (incluye los $552 de la IPO aún sin confirmar; XRP es aproxim
 
 ## Pendiente
 - Confirmación de la IPO de Anthropic: acciones asignadas y precio final.
-- Código de afiliado de Revo y su link.
+- Código de afiliado de Revo (el link ya está: revomx.com/neshudo).
