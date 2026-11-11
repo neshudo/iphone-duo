@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>iPhone Duo vs. Inversión</title>
+<meta name="description" content="Lo que cuesta un iPhone Duo, invertido en acciones y cripto. Portafolio de Neshudo en vivo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: one column, receipt-like — the price tag on top, today's value, the split, then each position. */
+:root {
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --fg: #14161a;
+  --muted: #5d6470;
+  --line: #e1e4e9;
+  --accent: #0a66ff;
+  --up: #0f8a4f;
+  --up-bg: #e3f5eb;
+  --down: #c8322b;
+  --down-bg: #fbe7e5;
+  --pending: #8a5a00;
+  --pending-bg: #fff1d6;
+  --c-slate: #2f3a4a;
+  --c-sky: #3d8bff;
+  --c-clay: #d97757;
+  --c-silver: #9aa3ae;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d0f12; --surface: #16191e; --fg: #eef0f3; --muted: #9aa1ac; --line: #262a31;
+    --accent: #5b9bff; --up: #3ecf86; --up-bg: #12301f; --down: #ff6b62; --down-bg: #3a1714;
+    --pending: #f5c26b; --pending-bg: #3a2c10;
+    --c-slate: #c3cbd6; --c-sky: #4f9bff; --c-clay: #e5876a; --c-silver: #6c7480;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d0f12; --surface: #16191e; --fg: #eef0f3; --muted: #9aa1ac; --line: #262a31;
+  --accent: #5b9bff; --up: #3ecf86; --up-bg: #12301f; --down: #ff6b62; --down-bg: #3a1714;
+  --pending: #f5c26b; --pending-bg: #3a2c10;
+  --c-slate: #c3cbd6; --c-sky: #4f9bff; --c-clay: #e5876a; --c-silver: #6c7480;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--fg);
+  font: 15px/1.5 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap {
+  max-width: 880px; margin: 0 auto;
+  padding-block: 40px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 20px;
+}
+.num { font-variant-numeric: tabular-nums; }
+
+/* Price tag */
+.tag { display: grid; gap: 6px; padding-bottom: 8px; }
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+h1 {
+  font-family: var(--font-display); font-weight: 700; margin: 0;
+  font-size: clamp(30px, 6vw, 48px); line-height: 1.05; letter-spacing: -.02em; text-wrap: balance;
+}
+h1 .strike { text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: var(--down); }
+.sub { font-family: var(--font-display); font-size: clamp(18px, 3.4vw, 24px); font-weight: 500; margin: 0; }
+.sub b { color: var(--accent); font-weight: 700; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+
+/* Today */
+.today { display: grid; gap: 4px; }
+.today .label { color: var(--muted); font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.live { display: inline-flex; align-items: center; gap: 6px; color: var(--up); font-weight: 600; }
+.live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: pulse 2s infinite; }
+@keyframes pulse { 50% { opacity: .3; } }
+@media (prefers-reduced-motion: reduce) { .live::before { animation: none; } }
+.big { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 9vw, 64px); line-height: 1; letter-spacing: -.03em; }
+.delta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+.pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-weight: 600; font-size: 13px; white-space: nowrap; }
+.pill.up { color: var(--up); background: var(--up-bg); }
+.pill.down { color: var(--down); background: var(--down-bg); }
+.pill.pending { color: var(--pending); background: var(--pending-bg); }
+.note { color: var(--muted); font-size: 13px; }
+
+/* Split */
+.split { display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: center; }
+.split h2, .positions h2 { font-family: var(--font-display); font-size: 18px; margin: 0 0 12px; font-weight: 600; }
+.donut { width: 100%; max-width: 220px; aspect-ratio: 1; display: block; margin: 0 auto; }
+.donut text { fill: var(--fg); font-family: var(--font-display); }
+.legend { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.legend li { display: grid; grid-template-columns: 12px 1fr auto; gap: 10px; align-items: center; }
+.sw { width: 12px; height: 12px; border-radius: 3px; }
+.legend .pct { color: var(--muted); font-size: 13px; margin-left: 6px; }
+
+/* Positions */
+.positions { display: grid; gap: 0; }
+.row { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; padding: 16px 0; border-top: 1px solid var(--line); }
+.row:first-of-type { border-top: 0; padding-top: 4px; }
+.row .name { font-weight: 600; font-size: 16px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.row .type { font-size: 12px; color: var(--muted); font-weight: 500; }
+.row .how { color: var(--muted); font-size: 13px; grid-column: 1; min-width: 0; }
+.row .value { text-align: right; font-weight: 600; font-size: 16px; }
+.row .right { display: grid; gap: 4px; justify-items: end; grid-row: span 2; align-content: start; }
+.row .cost { color: var(--muted); font-size: 13px; }
+
+/* Revo */
+.revo { display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.revo p { margin: 0; min-width: 0; }
+.revo .t { font-family: var(--font-display); font-weight: 600; font-size: 18px; }
+.revo .code { display: inline-flex; gap: 8px; align-items: center; margin-top: 6px; flex-wrap: wrap; }
+.revo code { font: 600 15px/1 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .06em; padding: 6px 10px; border-radius: 8px; border: 1px dashed var(--line); background: var(--bg); user-select: all; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 22px; border-radius: 12px; border: 0; cursor: pointer;
+  background: var(--accent); color: #fff; font: 600 16px/1 var(--font-body); text-decoration: none;
+}
+.btn:hover { filter: brightness(1.08); }
+.btn:focus-visible, .copy:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.copy { background: none; border: 1px solid var(--line); color: var(--fg); border-radius: 8px; padding: 6px 10px; font: 500 13px var(--font-body); cursor: pointer; }
+
+footer { color: var(--muted); font-size: 12px; display: grid; gap: 4px; }
+
+@media (max-width: 620px) {
+  .wrap { padding-block: 24px 40px; gap: 16px; }
+  .card { padding: 18px; }
+  .split { grid-template-columns: 1fr; gap: 16px; }
+  .donut { max-width: 200px; }
+  .revo .btn { width: 100%; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <header class="tag">
+    <span class="eyebrow">¿Y si en vez del iPhone, invierto?</span>
+    <h1>Costo del iPhone Duo: <span class="num" id="iphone-cost">$2,000</span></h1>
+    <p class="sub">Inversión de salida: <b class="num" id="exit">$2,000</b></p>
+  </header>
+
+  <section class="card today" id="hoy" aria-live="polite">
+    <div class="label">Lo que vale hoy <span class="live" id="live">En vivo</span></div>
+    <div class="big num" id="total">—</div>
+    <div class="delta">
+      <span class="pill num" id="total-pill">—</span>
+      <span class="note num" id="invested">—</span>
+    </div>
+  </section>
+
+  <section class="card split" id="reparto">
+    <svg class="donut" id="donut" viewBox="0 0 220 220" role="img" aria-label="Cómo está repartida la inversión"></svg>
+    <div>
+      <h2>Cómo está repartido</h2>
+      <ul class="legend" id="legend"></ul>
+    </div>
+  </section>
+
+  <section class="card positions" id="posiciones">
+    <h2>En qué invertí</h2>
+    <div id="rows"></div>
+  </section>
+
+  <section class="card revo" id="revo" hidden>
+    <p>
+      <span class="t">¿Y tu plan de celular?</span><br>
+      <span class="code">Mi código: <code id="revo-code"></code> <button class="copy" id="copy" type="button">Copiar</button></span>
+    </p>
+    <a class="btn" id="revo-btn" href="#" target="_blank" rel="noopener">Cambia a Revo</a>
+  </section>
+
+  <footer>
+    <span id="updated">Cargando precios…</span>
+    <span>Cripto: precio de CoinGecko, se actualiza cada minuto. Acciones: precio de Yahoo Finance, se actualiza cada ~15 minutos en horario de bolsa.</span>
+    <span>Esto es un experimento personal para un video, no una recomendación de inversión. Las inversiones pueden perder valor.</span>
+  </footer>
+</main>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const money = (n) => (n < 0 ? "−$" : "$") + Math.abs(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const money0 = (n) => "$" + n.toLocaleString("en-US", { maximumFractionDigits: 0 });
+  const qtyFmt = (n) => n.toLocaleString("en-US", { maximumFractionDigits: 6 });
+  const priceFmt = (n) => "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: n < 10 ? 4 : 2 });
+  const pctFmt = (n) => (n >= 0 ? "+" : "−") + Math.abs(n).toFixed(1) + "%";
+  const meses = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+  const dateFmt = (s) => { const [y, m, d] = s.split("-").map(Number); return d + " " + meses[m - 1]; };
+  const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+  let data = null;
+  let prices = {};
+  let updatedAt = null;
+
+  async function getJSON(url) {
+    const r = await fetch(url, { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    return r.json();
+  }
+
+  async function loadBase() {
+    data = await getJSON("data.json");
+    $("iphone-cost").textContent = money0(data.iphoneCost);
+    $("exit").textContent = money0(data.exitInvestment);
+    try {
+      const p = await getJSON("prices.json");
+      prices = p.prices || {};
+      updatedAt = p.updated ? new Date(p.updated) : null;
+    } catch (e) { /* sin snapshot: se queda vacío */ }
+    if (data.revo && data.revo.url) {
+      $("revo").hidden = false;
+      $("revo-btn").href = data.revo.url;
+      if (data.revo.code) $("revo-code").textContent = data.revo.code;
+      else $("revo-code").parentElement.hidden = true;
+    }
+    render();
+    refreshCrypto();
+    setInterval(refreshCrypto, 60000);
+  }
+
+  async function refreshCrypto() {
+    const list = data.assets.filter((a) => a.coingecko);
+    if (!list.length) return;
+    try {
+      const ids = list.map((a) => a.coingecko).join(",");
+      const r = await getJSON("https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd&ids=" + ids);
+      const now = new Date().toISOString();
+      list.forEach((a) => { if (r[a.coingecko]) prices[a.id] = { price: r[a.coingecko].usd, at: now }; });
+      updatedAt = new Date();
+      $("live").hidden = false;
+      render();
+    } catch (e) {
+      $("live").hidden = true; // sin conexión en vivo: se muestra el último precio guardado
+    }
+  }
+
+  function valueOf(a) {
+    if (a.status === "pending") return { value: a.cost, price: null };
+    const p = prices[a.id];
+    if (!p) return { value: null, price: null };
+    return { value: a.qty * p.price, price: p.price };
+  }
+
+  function render() {
+    const rows = data.assets.map((a) => ({ a, ...valueOf(a) }));
+    const known = rows.filter((r) => r.value !== null);
+    const total = known.reduce((s, r) => s + r.value, 0);
+    const invested = data.assets.reduce((s, a) => s + a.cost, 0);
+    const allKnown = known.length === rows.length;
+
+    $("total").textContent = allKnown ? money(total) : "—";
+    const diff = total - invested;
+    const pill = $("total-pill");
+    if (allKnown) {
+      pill.textContent = (diff >= 0 ? "▲ " : "▼ ") + money(diff).replace("−", "") + " (" + pctFmt(diff / invested * 100) + ")";
+      pill.className = "pill num " + (diff >= 0 ? "up" : "down");
+    } else { pill.textContent = "Cargando…"; pill.className = "pill num"; }
+    $("invested").textContent = "Invertido en total: " + money(invested);
+
+    // Posiciones
+    const host = $("rows");
+    host.replaceChildren();
+    rows.forEach(({ a, value, price }) => {
+      const row = document.createElement("div");
+      row.className = "row"; row.id = "pos-" + a.id.toLowerCase();
+
+      const name = document.createElement("div");
+      name.className = "name";
+      const sw = document.createElement("span"); sw.className = "sw"; sw.style.background = cssVar("--c-" + a.color);
+      const nm = document.createElement("span"); nm.textContent = a.name;
+      const ty = document.createElement("span"); ty.className = "type"; ty.textContent = a.type;
+      name.append(sw, nm, ty);
+
+      const how = document.createElement("div");
+      how.className = "how num";
+      if (a.status === "pending") {
+        how.textContent = "Pedí " + a.qty + " acciones en la IPO · rango " + a.priceRange + " · máximo " + priceFmt(a.maxPrice) +
+          " c/u · sale a bolsa el " + dateFmt(a.ipoDate) + ". Si no me asignan todas, el dinero que sobre regresa.";
+      } else {
+        how.textContent = "Compré " + qtyFmt(a.qty) + " a " + priceFmt(a.buyPrice) + " · " + dateFmt(a.date) +
+          (price !== null ? " · hoy " + priceFmt(price) : "");
+      }
+
+      const right = document.createElement("div");
+      right.className = "right";
+      const val = document.createElement("div"); val.className = "value num";
+      const p = document.createElement("span");
+      if (a.status === "pending") {
+        val.textContent = money(a.cost);
+        p.className = "pill pending"; p.textContent = "Pendiente";
+      } else if (value === null) {
+        val.textContent = "—"; p.className = "pill"; p.textContent = "Sin precio";
+      } else {
+        val.textContent = money(value);
+        const d = value - a.cost;
+        p.className = "pill num " + (d >= 0 ? "up" : "down");
+        p.textContent = pctFmt(d / a.cost * 100);
+      }
+      const cost = document.createElement("div"); cost.className = "cost num";
+      cost.textContent = (a.status === "pending" ? "Apartado" : "Me costó ") + (a.status === "pending" ? "" : money(a.cost));
+      right.append(val, p, cost);
+
+      row.append(name, right, how);
+      host.append(row);
+    });
+
+    // Donut
+    const svg = $("donut");
+    svg.replaceChildren();
+    const ns = "http://www.w3.org/2000/svg";
+    const cx = 110, cy = 110, R = 96, r = 66;
+    const legend = $("legend");
+    legend.replaceChildren();
+    if (total > 0) {
+      let ang = -Math.PI / 2;
+      known.forEach(({ a, value }) => {
+        const frac = value / total;
+        const end = ang + frac * Math.PI * 2;
+        const large = end - ang > Math.PI ? 1 : 0;
+        const pt = (rad, t) => [cx + rad * Math.cos(t), cy + rad * Math.sin(t)];
+        const [x1, y1] = pt(R, ang), [x2, y2] = pt(R, end), [x3, y3] = pt(r, end), [x4, y4] = pt(r, ang);
+        const path = document.createElementNS(ns, "path");
+        path.setAttribute("d", `M${x1},${y1} A${R},${R} 0 ${large} 1 ${x2},${y2} L${x3},${y3} A${r},${r} 0 ${large} 0 ${x4},${y4} Z`);
+        path.setAttribute("fill", cssVar("--c-" + a.color));
+        path.setAttribute("stroke", cssVar("--surface"));
+        path.setAttribute("stroke-width", "2");
+        if (a.status === "pending") path.setAttribute("fill-opacity", "0.55");
+        const t = document.createElementNS(ns, "title");
+        t.textContent = a.name + ": " + money(value) + " (" + (frac * 100).toFixed(1) + "%)";
+        path.append(t);
+        svg.append(path);
+        ang = end;
+
+        const li = document.createElement("li");
+        const sw = document.createElement("span"); sw.className = "sw"; sw.style.background = cssVar("--c-" + a.color);
+        if (a.status === "pending") sw.style.opacity = ".55";
+        const n = document.createElement("span"); n.textContent = a.name + (a.status === "pending" ? " (pendiente)" : "");
+        const v = document.createElement("span"); v.className = "num"; v.textContent = money(value);
+        const pc = document.createElement("span"); pc.className = "pct"; pc.textContent = (frac * 100).toFixed(0) + "%";
+        v.append(pc);
+        li.append(sw, n, v);
+        legend.append(li);
+      });
+      const label = document.createElementNS(ns, "text");
+      label.setAttribute("x", cx); label.setAttribute("y", cy - 4); label.setAttribute("text-anchor", "middle");
+      label.setAttribute("font-size", "13"); label.setAttribute("opacity", ".65"); label.textContent = "Total";
+      const val = document.createElementNS(ns, "text");
+      val.setAttribute("x", cx); val.setAttribute("y", cy + 18); val.setAttribute("text-anchor", "middle");
+      val.setAttribute("font-size", "20"); val.setAttribute("font-weight", "700"); val.textContent = money0(total);
+      svg.append(label, val);
+    }
+
+    $("updated").textContent = updatedAt
+      ? "Última actualización: " + updatedAt.toLocaleString("es-MX", { dateStyle: "medium", timeStyle: "short" })
+      : "Cargando precios…";
+  }
+
+  $("copy").addEventListener("click", async () => {
+    const code = $("revo-code").textContent;
+    try { await navigator.clipboard.writeText(code); $("copy").textContent = "¡Copiado!"; }
+    catch (e) {
+      const range = document.createRange(); range.selectNodeContents($("revo-code"));
+      const s = getSelection(); s.removeAllRanges(); s.addRange(range);
+      $("copy").textContent = "Selecciónalo y cópialo";
+    }
+    setTimeout(() => { $("copy").textContent = "Copiar"; }, 2000);
+  });
+
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => data && render());
+
+  loadBase().catch(() => { $("updated").textContent = "No se pudieron cargar los datos. Recarga la página."; });
+})();
+</script>
+</body>
+</html>

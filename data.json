@@ -1,0 +1,58 @@
+{
+  "iphoneCost": 2000,
+  "exitInvestment": 2000,
+  "startDate": "2026-11-05",
+  "revo": {
+    "code": "",
+    "url": ""
+  },
+  "assets": [
+    {
+      "id": "XRP",
+      "name": "XRP",
+      "type": "Cripto",
+      "qty": 406.82,
+      "buyPrice": 1.225,
+      "cost": 498.35,
+      "date": "2026-11-05",
+      "coingecko": "ripple",
+      "color": "slate"
+    },
+    {
+      "id": "SUI",
+      "name": "Sui",
+      "type": "Cripto",
+      "qty": 584.674,
+      "buyPrice": 0.855,
+      "cost": 500.04,
+      "date": "2026-11-05",
+      "coingecko": "sui",
+      "color": "sky"
+    },
+    {
+      "id": "ANT",
+      "name": "Anthropic",
+      "type": "Acción · IPO",
+      "status": "pending",
+      "qty": 6,
+      "maxPrice": 92,
+      "priceRange": "$70 – $78",
+      "cost": 552,
+      "date": "2026-11-10",
+      "ipoDate": "2026-11-19",
+      "yahoo": null,
+      "color": "clay"
+    },
+    {
+      "id": "AAPL",
+      "name": "Apple",
+      "type": "Acción",
+      "qty": 1.382474,
+      "buyPrice": 339.97,
+      "cost": 470,
+      "date": "2026-11-05",
+      "yahoo": "AAPL",
+      "color": "silver"
+    }
+  ]
+}
